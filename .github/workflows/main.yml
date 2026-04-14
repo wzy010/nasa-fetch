@@ -1,17 +1,25 @@
-name: NASA_ULTRA_HD_GETTER
+name: NASA_ULTRA_HD_DEBUG
 on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Original TIF
+      - name: Force Download TIF
         run: |
-          # 加上 Referer 模拟从官网点击，改用真正的 40MB 原件后缀 .tif
-          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.tif" \
+          # 1. 打印当前时间，确保不是旧缓存
+          date
+          # 2. 使用 NASA 最原始的无损存储地址，并加上随机数后缀
+          # 加上 -v 参数，我们可以看到所有的 HTTP 握手细节
+          curl -v -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.tif?v=$(date +%s)" \
                -H "Referer: https://images.nasa.gov/" \
-               -o earth_ultra_hd.tif
-      - name: Upload Artifact
+               -o earth_full.tif
+          
+          # 3. 关键一步：在控制台打印文件大小
+          echo "Checking file size..."
+          ls -lh earth_full.tif
+          
+      - name: Upload if successful
         uses: actions/upload-artifact@v4
         with:
-          name: nasa-earth-40MB
-          path: earth_ultra_hd.tif
+          name: nasa-earth-original
+          path: earth_full.tif
