@@ -1,0 +1,14 @@
+name: NASA_IMAGE_GETTER
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Original Image
+        run: |
+          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.jpg" -o earth_hd.jpg
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-earth-final
+          path: earth_hd.jpg
