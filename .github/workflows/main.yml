@@ -1,25 +1,25 @@
-name: NASA_ULTRA_HD_DEBUG
+name: NASA_FINAL_ATTEMPT
 on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Force Download TIF
+      - name: Precise Download
         run: |
-          # 1. 打印当前时间，确保不是旧缓存
-          date
-          # 2. 使用 NASA 最原始的无损存储地址，并加上随机数后缀
-          # 加上 -v 参数，我们可以看到所有的 HTTP 握手细节
-          curl -v -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.tif?v=$(date +%s)" \
+          # 1. 彻底去掉 v= 参数，这个参数会导致 403
+          # 2. 模拟完整的浏览器头信息
+          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.jpg" \
+               -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
                -H "Referer: https://images.nasa.gov/" \
-               -o earth_full.tif
+               -H "Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8" \
+               --compressed \
+               -o final_earth.jpg
+
+          # 检查大小
+          ls -lh final_earth.jpg
           
-          # 3. 关键一步：在控制台打印文件大小
-          echo "Checking file size..."
-          ls -lh earth_full.tif
-          
-      - name: Upload if successful
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: nasa-earth-original
-          path: earth_full.tif
+          name: nasa-result
+          path: final_earth.jpg
