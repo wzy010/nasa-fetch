@@ -6,7 +6,7 @@ jobs:
     steps:
       - name: Download Original Image
         run: |
-          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.jpg" -o earth_hd.jpg
+          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.tif" -o earth_hd.tif
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
