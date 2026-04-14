@@ -1,14 +1,17 @@
-name: NASA_IMAGE_GETTER
+name: NASA_ULTRA_HD_GETTER
 on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Original Image
+      - name: Download Original TIF
         run: |
-          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.tif" -o earth_hd.tif
+          # 加上 Referer 模拟从官网点击，改用真正的 40MB 原件后缀 .tif
+          curl -L "https://images-assets.nasa.gov/image/art002e008486/art002e008486~orig.tif" \
+               -H "Referer: https://images.nasa.gov/" \
+               -o earth_ultra_hd.tif
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nasa-earth-final
-          path: earth_hd.jpg
+          name: nasa-earth-40MB
+          path: earth_ultra_hd.tif
